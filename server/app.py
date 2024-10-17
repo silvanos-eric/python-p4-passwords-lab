@@ -20,17 +20,30 @@ class Signup(Resource):
 
     def post(self):
         try:
-            json = request.get_json()
-            user = User(username=json['username'])
-            user.password_hash = json['password']
+            data = request.json
+
+            password = data['password']
+            password_confirmation = data['password_confirmation']
+
+            if password != password_confirmation:
+                raise ValueError('Passowrds do not match')
+
+            user = User(username=data['username'])
+            user.password_hash = data['password']
+
             db.session.add(user)
             db.session.commit()
+
             return user.to_dict(rules=('-_password_hash', )), 201
-        except (KeyError) as e:
+        except (KeyError, ValueError) as e:
             errors = []
 
             if isinstance(e, KeyError):
                 errors.append(f'Missing required field: {e}')
+
+            if isinstance(e, ValueError):
+                errors.append(str(e))
+
             return {'errors': errors}, 400
         except:
             return {'errors': ['An unknown error occurred']}, 500

@@ -61,7 +61,7 @@ class CheckSession(Resource):
             user = db.session.get(User, current_user_id)
             if not user:
                 return {}, 204
-            return user.to_dict(rules=('-_password_hash', ))
+            return user.to_dict(rules=('-_password_hash', )), 200
         return {}, 204
 
 
@@ -87,7 +87,7 @@ class Login(Resource):
             session['user_id'] = user.id
 
             # Return the user object
-            return user.to_dict(rules=('-_password', )), 200
+            return user.to_dict(rules=('-_password_hash', )), 200
 
         except KeyError as e:
             # Handle missing required fields
@@ -105,13 +105,17 @@ class Login(Resource):
 
 
 class Logout(Resource):
-    pass
+
+    def delete(self):
+        session.pop('user_id')
+        return {}, 200
 
 
 api.add_resource(ClearSession, '/clear', endpoint='clear')
 api.add_resource(Signup, '/signup', endpoint='signup')
 api.add_resource(CheckSession, '/check_session')
 api.add_resource(Login, '/login')
+api.add_resource(Logout, '/logout')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

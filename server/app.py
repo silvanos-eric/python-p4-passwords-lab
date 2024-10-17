@@ -24,10 +24,10 @@ class Signup(Resource):
 
             username = data['username']
             password = data['password']
-            password_confirmation = data['password_confirmation']
+            # password_confirmation = data['password_confirmation']
 
-            if password != password_confirmation:
-                raise ValueError('Passowrds do not match')
+            # if password != password_confirmation:
+            #     raise ValueError('Passowrds do not match')
 
             new_user = User(username=username)
             new_user.password_hash = password

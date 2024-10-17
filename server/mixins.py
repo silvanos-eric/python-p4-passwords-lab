@@ -1,6 +1,5 @@
 from config import bcrypt, db
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy_serializer import SerializerMixin
 
 
 class PasswordMixin:

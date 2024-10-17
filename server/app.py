@@ -19,12 +19,21 @@ class ClearSession(Resource):
 class Signup(Resource):
 
     def post(self):
-        json = request.get_json()
-        user = User(username=json['username'])
-        user.password_hash = json['password']
-        db.session.add(user)
-        db.session.commit()
-        return user.to_dict(), 201
+        try:
+            json = request.get_json()
+            user = User(username=json['username'])
+            user.password_hash = json['password']
+            db.session.add(user)
+            db.session.commit()
+            return user.to_dict(rules=('-_password_hash', )), 201
+        except (KeyError) as e:
+            errors = []
+
+            if isinstance(e, KeyError):
+                errors.append(f'Missing required field: {e}')
+            return {'errors': errors}, 400
+        except:
+            return {'errors': ['An unknown error occurred']}, 500
 
 
 class CheckSession(Resource):

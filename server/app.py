@@ -23,10 +23,10 @@ class Signup(Resource):
             data = request.json
 
             password = data['password']
-            password_confirmation = data['password_confirmation']
+            # password_confirmation = data['password_confirmation']
 
-            if password != password_confirmation:
-                raise ValueError('Passowrds do not match')
+            # if password != password_confirmation:
+            #     raise ValueError('Passowrds do not match')
 
             user = User(username=data['username'])
             user.password_hash = data['password']
